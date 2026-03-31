@@ -1,0 +1,121 @@
+S.No,Domain,Level,Question Type,Question,Description,Sample Input,Sample Output
+1,Frontend,Easy,Coding,Frontend Easy Coding Question 1: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+2,Frontend,Easy,Coding,Frontend Easy Coding Question 2: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+3,Frontend,Easy,Coding,Frontend Easy Coding Question 3: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+4,Frontend,Easy,Coding,Frontend Easy Coding Question 4: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+5,Frontend,Easy,Coding,Frontend Easy Coding Question 5: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+6,Frontend,Easy,Coding,Frontend Easy Coding Question 6: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+7,Frontend,Easy,Coding,Frontend Easy Coding Question 7: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+8,Frontend,Easy,Coding,Frontend Easy Coding Question 8: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+9,Frontend,Easy,Coding,Frontend Easy Coding Question 9: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+10,Frontend,Easy,Coding,Frontend Easy Coding Question 10: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+11,Frontend,Medium,Coding,Frontend Medium Coding Question 1: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+12,Frontend,Medium,Coding,Frontend Medium Coding Question 2: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+13,Frontend,Medium,Coding,Frontend Medium Coding Question 3: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+14,Frontend,Medium,Coding,Frontend Medium Coding Question 4: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+15,Frontend,Medium,Coding,Frontend Medium Coding Question 5: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+16,Frontend,Medium,Coding,Frontend Medium Coding Question 6: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+17,Frontend,Medium,Coding,Frontend Medium Coding Question 7: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+18,Frontend,Medium,Coding,Frontend Medium Coding Question 8: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+19,Frontend,Medium,Coding,Frontend Medium Coding Question 9: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+20,Frontend,Medium,Coding,Frontend Medium Coding Question 10: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+21,Frontend,Hard,Coding,Frontend Hard Coding Question 1: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+22,Frontend,Hard,Coding,Frontend Hard Coding Question 2: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+23,Frontend,Hard,Coding,Frontend Hard Coding Question 3: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+24,Frontend,Hard,Coding,Frontend Hard Coding Question 4: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+25,Frontend,Hard,Coding,Frontend Hard Coding Question 5: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+26,Frontend,Hard,Coding,Frontend Hard Coding Question 6: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+27,Frontend,Hard,Coding,Frontend Hard Coding Question 7: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+28,Frontend,Hard,Coding,Frontend Hard Coding Question 8: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+29,Frontend,Hard,Coding,Frontend Hard Coding Question 9: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+30,Frontend,Hard,Coding,Frontend Hard Coding Question 10: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+31,Backend,Easy,Coding,Backend Easy Coding Question 1: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+32,Backend,Easy,Coding,Backend Easy Coding Question 2: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+33,Backend,Easy,Coding,Backend Easy Coding Question 3: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+34,Backend,Easy,Coding,Backend Easy Coding Question 4: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+35,Backend,Easy,Coding,Backend Easy Coding Question 5: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+36,Backend,Easy,Coding,Backend Easy Coding Question 6: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+37,Backend,Easy,Coding,Backend Easy Coding Question 7: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+38,Backend,Easy,Coding,Backend Easy Coding Question 8: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+39,Backend,Easy,Coding,Backend Easy Coding Question 9: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+40,Backend,Easy,Coding,Backend Easy Coding Question 10: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+41,Backend,Medium,Coding,Backend Medium Coding Question 1: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+42,Backend,Medium,Coding,Backend Medium Coding Question 2: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+43,Backend,Medium,Coding,Backend Medium Coding Question 3: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+44,Backend,Medium,Coding,Backend Medium Coding Question 4: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+45,Backend,Medium,Coding,Backend Medium Coding Question 5: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+46,Backend,Medium,Coding,Backend Medium Coding Question 6: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+47,Backend,Medium,Coding,Backend Medium Coding Question 7: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+48,Backend,Medium,Coding,Backend Medium Coding Question 8: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+49,Backend,Medium,Coding,Backend Medium Coding Question 9: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+50,Backend,Medium,Coding,Backend Medium Coding Question 10: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+51,Backend,Hard,Coding,Backend Hard Coding Question 1: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+52,Backend,Hard,Coding,Backend Hard Coding Question 2: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+53,Backend,Hard,Coding,Backend Hard Coding Question 3: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+54,Backend,Hard,Coding,Backend Hard Coding Question 4: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+55,Backend,Hard,Coding,Backend Hard Coding Question 5: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+56,Backend,Hard,Coding,Backend Hard Coding Question 6: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+57,Backend,Hard,Coding,Backend Hard Coding Question 7: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+58,Backend,Hard,Coding,Backend Hard Coding Question 8: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+59,Backend,Hard,Coding,Backend Hard Coding Question 9: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+60,Backend,Hard,Coding,Backend Hard Coding Question 10: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+61,Database,Easy,Coding,Database Easy Coding Question 1: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+62,Database,Easy,Coding,Database Easy Coding Question 2: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+63,Database,Easy,Coding,Database Easy Coding Question 3: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+64,Database,Easy,Coding,Database Easy Coding Question 4: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+65,Database,Easy,Coding,Database Easy Coding Question 5: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+66,Database,Easy,Coding,Database Easy Coding Question 6: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+67,Database,Easy,Coding,Database Easy Coding Question 7: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+68,Database,Easy,Coding,Database Easy Coding Question 8: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+69,Database,Easy,Coding,Database Easy Coding Question 9: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+70,Database,Easy,Coding,Database Easy Coding Question 10: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+71,Database,Medium,Coding,Database Medium Coding Question 1: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+72,Database,Medium,Coding,Database Medium Coding Question 2: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+73,Database,Medium,Coding,Database Medium Coding Question 3: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+74,Database,Medium,Coding,Database Medium Coding Question 4: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+75,Database,Medium,Coding,Database Medium Coding Question 5: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+76,Database,Medium,Coding,Database Medium Coding Question 6: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+77,Database,Medium,Coding,Database Medium Coding Question 7: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+78,Database,Medium,Coding,Database Medium Coding Question 8: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+79,Database,Medium,Coding,Database Medium Coding Question 9: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+80,Database,Medium,Coding,Database Medium Coding Question 10: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+81,Database,Hard,Coding,Database Hard Coding Question 1: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+82,Database,Hard,Coding,Database Hard Coding Question 2: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+83,Database,Hard,Coding,Database Hard Coding Question 3: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+84,Database,Hard,Coding,Database Hard Coding Question 4: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+85,Database,Hard,Coding,Database Hard Coding Question 5: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+86,Database,Hard,Coding,Database Hard Coding Question 6: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+87,Database,Hard,Coding,Database Hard Coding Question 7: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+88,Database,Hard,Coding,Database Hard Coding Question 8: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+89,Database,Hard,Coding,Database Hard Coding Question 9: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+90,Database,Hard,Coding,Database Hard Coding Question 10: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+91,Full Stack,Easy,Coding,Full Stack Easy Coding Question 1: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+92,Full Stack,Easy,Coding,Full Stack Easy Coding Question 2: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+93,Full Stack,Easy,Coding,Full Stack Easy Coding Question 3: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+94,Full Stack,Easy,Coding,Full Stack Easy Coding Question 4: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+95,Full Stack,Easy,Coding,Full Stack Easy Coding Question 5: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+96,Full Stack,Easy,Coding,Full Stack Easy Coding Question 6: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+97,Full Stack,Easy,Coding,Full Stack Easy Coding Question 7: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+98,Full Stack,Easy,Coding,Full Stack Easy Coding Question 8: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+99,Full Stack,Easy,Coding,Full Stack Easy Coding Question 9: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+100,Full Stack,Easy,Coding,Full Stack Easy Coding Question 10: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+101,Full Stack,Medium,Coding,Full Stack Medium Coding Question 1: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+102,Full Stack,Medium,Coding,Full Stack Medium Coding Question 2: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+103,Full Stack,Medium,Coding,Full Stack Medium Coding Question 3: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+104,Full Stack,Medium,Coding,Full Stack Medium Coding Question 4: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+105,Full Stack,Medium,Coding,Full Stack Medium Coding Question 5: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+106,Full Stack,Medium,Coding,Full Stack Medium Coding Question 6: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+107,Full Stack,Medium,Coding,Full Stack Medium Coding Question 7: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+108,Full Stack,Medium,Coding,Full Stack Medium Coding Question 8: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+109,Full Stack,Medium,Coding,Full Stack Medium Coding Question 9: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+110,Full Stack,Medium,Coding,Full Stack Medium Coding Question 10: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+111,Full Stack,Hard,Coding,Full Stack Hard Coding Question 1: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+112,Full Stack,Hard,Coding,Full Stack Hard Coding Question 2: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+113,Full Stack,Hard,Coding,Full Stack Hard Coding Question 3: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+114,Full Stack,Hard,Coding,Full Stack Hard Coding Question 4: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+115,Full Stack,Hard,Coding,Full Stack Hard Coding Question 5: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+116,Full Stack,Hard,Coding,Full Stack Hard Coding Question 6: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+117,Full Stack,Hard,Coding,Full Stack Hard Coding Question 7: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+118,Full Stack,Hard,Coding,Full Stack Hard Coding Question 8: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+119,Full Stack,Hard,Coding,Full Stack Hard Coding Question 9: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output
+120,Full Stack,Hard,Coding,Full Stack Hard Coding Question 10: Solve the given problem.,Write a function to process the input.,Sample Input,Sample Output

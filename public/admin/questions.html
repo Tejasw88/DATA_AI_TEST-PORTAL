@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Bank | DATA.AI Admin</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        body { display: flex; background: #F8FAFC; height: 100vh; overflow: hidden; }
+        
+        .sidebar { width: 260px; background: #1E293B; color: white; display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar-header { padding: 2rem; font-size: 1.5rem; font-weight: 800; border-bottom: 1px solid #334155; }
+        .sidebar-nav { flex: 1; padding: 1.5rem 0; }
+        .nav-link { display: flex; align-items: center; gap: 1rem; padding: 0.875rem 2rem; color: #94A3B8; font-weight: 500; transition: all 0.2s; }
+        .nav-link:hover { color: white; background: #334155; }
+        .nav-link.active { color: white; background: var(--primary); }
+
+        .main-content { flex: 1; overflow-y: auto; padding: 2.5rem; }
+        .dataTable { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+        .dataTable th { background: #F1F5F9; text-align: left; padding: 1rem 1.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+        .dataTable td { padding: 1rem 1.5rem; border-top: 1px solid var(--border); font-size: 0.875rem; }
+
+        .controls { display: flex; gap: 1rem; margin-bottom: 2rem; }
+        
+        /* Modal Styles */
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .modal-content { background: white; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; padding: 2.5rem; border-radius: var(--radius-md); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); position: relative; }
+        
+        .type-fields { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">DATA.AI</div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="questions.html" class="nav-link active">Question Bank</a>
+            <a href="candidates.html" class="nav-link">Candidates</a>
+            <a href="sessions.html" class="nav-link">Test Sessions</a>
+            <a href="results.html" class="nav-link">Results</a>
+            <a href="settings.html" class="nav-link">Settings</a>
+        </nav>
+        <div style="padding: 2rem; border-top: 1px solid #334155;">
+            <button class="btn btn-outline" style="width: 100%; color: #94A3B8; border-color: #334155;" onclick="utils.auth.logout()">Logout</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5rem;">
+            <div>
+                <h1 style="font-size: 1.75rem;">Question Bank</h1>
+                <p style="color: var(--text-muted);">Manage MCQ and Coding questions for all domains.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openModal()">+ Add New Question</button>
+        </div>
+
+        <!-- Filters -->
+        <div class="controls">
+            <select id="filter-domain" class="form-control" style="width: auto;" onchange="filterQuestions()">
+                <option value="">All Domains</option>
+                <option value="Frontend">Frontend</option>
+                <option value="Backend">Backend</option>
+                <option value="Database">Database</option>
+                <option value="Full Stack">Full Stack</option>
+                <option value="App Development">App Development</option>
+                <option value="General">General</option>
+            </select>
+            <select id="filter-difficulty" class="form-control" style="width: auto;" onchange="filterQuestions()">
+                <option value="">All Difficulties</option>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+            </select>
+            <input type="text" id="filter-search" class="form-control" placeholder="Search questions..." style="flex: 1;" oninput="filterQuestions()">
+        </div>
+
+        <table class="dataTable">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Question / Title</th>
+                    <th>Domain</th>
+                    <th>Level</th>
+                    <th>Marks</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="question-table-body">
+                <!-- Rows will be injected here -->
+            </tbody>
+        </table>
+    </main>
+
+    <!-- Question Editor Modal -->
+    <div id="question-modal" class="modal">
+        <div class="modal-content">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+                <h2 id="modal-title">Add New Question</h2>
+                <button onclick="closeModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer">&times;</button>
+            </div>
+            
+            <form id="question-form">
+                <input type="hidden" id="q-id">
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>QUESTION TYPE</label>
+                        <select id="q-type" class="form-control" onchange="toggleTypeFields()" required>
+                            <option value="MCQ">MCQ (Multiple Choice)</option>
+                            <option value="Coding">Coding / Programming</option>
+                            <option value="Aptitude">Aptitude</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>TITLE / HEADING</label>
+                        <input type="text" id="q-title" class="form-control" placeholder="e.g. Array Manipulation" required>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>DOMAIN</label>
+                        <select id="q-domain" class="form-control" required>
+                            <option value="Frontend">Frontend</option>
+                            <option value="Backend">Backend</option>
+                            <option value="Database">Database</option>
+                            <option value="Full Stack">Full Stack</option>
+                            <option value="App Development">App Development</option>
+                            <option value="General">General</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>DIFFICULTY</label>
+                        <select id="q-difficulty" class="form-control" required>
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>MARKS</label>
+                        <input type="number" id="q-marks" class="form-control" value="5" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>QUESTION CONTENT / PROBLEM DESCRIPTION</label>
+                    <textarea id="q-content" class="form-control" style="height: 120px;" required placeholder="Enter the full question text or coding problem description..."></textarea>
+                </div>
+
+                <!-- MCQ Specific Fields -->
+                <div id="mcq-fields" class="type-fields">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group"><label>Option A</label><input type="text" id="opt-a" class="form-control"></div>
+                        <div class="form-group"><label>Option B</label><input type="text" id="opt-b" class="form-control"></div>
+                        <div class="form-group"><label>Option C</label><input type="text" id="opt-c" class="form-control"></div>
+                        <div class="form-group"><label>Option D</label><input type="text" id="opt-d" class="form-control"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>CORRECT ANSWER</label>
+                        <select id="q-correct" class="form-control">
+                            <option value="A">Option A</option>
+                            <option value="B">Option B</option>
+                            <option value="C">Option C</option>
+                            <option value="D">Option D</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Coding Specific Fields (Test Cases) -->
+                <div id="coding-fields" class="type-fields" style="display:none;">
+                    <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem; display: block;">TEST CASES</label>
+                    <div id="test-cases-container" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
+                        <!-- Test case rows will be added here -->
+                    </div>
+                    <button type="button" class="btn btn-outline" style="font-size: 0.75rem; padding: 0.4rem 0.8rem;" onclick="addTestCaseRow()">+ Add Test Case</button>
+                    
+                    <div class="form-group" style="margin-top: 1.5rem;">
+                        <label>STARTER CODE (JSON)</label>
+                        <textarea id="q-starter" class="form-control" style="height: 80px; font-family: monospace; font-size: 0.8rem;" placeholder='{"python": "def solution()...", "javascript": "function..."}'></textarea>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Question</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/utils.js"></script>
+    <script>
+        utils.auth.checkAdmin();
+
+        let allQuestions = [];
+
+        async function loadQuestions() {
+            try {
+                const res = await utils.api('/api/admin/questions');
+                allQuestions = res.data;
+                console.log('Questions loaded:', allQuestions.length);
+                if (allQuestions.length > 0) console.log('First question sample:', allQuestions[0]);
+                renderQuestions(allQuestions);
+            } catch (err) {
+                console.error('Failed to load questions:', err);
+            }
+        }
+
+        function renderQuestions(questions) {
+            const tbody = document.getElementById('question-table-body');
+            tbody.innerHTML = '';
+
+            questions.forEach(q => {
+                const row = document.createElement('tr');
+                const badgeClass = q.type === 'Coding' ? 'badge-blue' : (q.type === 'MCQ' ? 'badge-green' : 'badge-yellow');
+                
+                row.innerHTML = `
+                    <td><span class="badge ${badgeClass}">${q.type}</span></td>
+                    <td>
+                        <strong>${q.title}</strong>
+                        <p style="font-size: 0.75rem; color: #64748B; max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${q.content}</p>
+                    </td>
+                    <td>${q.domain}</td>
+                    <td>${q.difficulty}</td>
+                    <td><strong>${q.marks}</strong></td>
+                    <td style="font-size: 0.75rem; color: #64748B;">${new Date(q.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-outline" onclick="openEditModal('${q.id}')" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">Edit</button>
+                        <button class="btn btn-outline" onclick="deleteQuestion('${q.id}')" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; color: var(--danger);">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function filterQuestions() {
+            const domain = document.getElementById('filter-domain').value;
+            const difficulty = document.getElementById('filter-difficulty').value;
+            const search = document.getElementById('filter-search').value.toLowerCase();
+
+            const filtered = allQuestions.filter(q => {
+                const matchDomain = !domain || q.domain === domain;
+                const matchDifficulty = !difficulty || q.difficulty === difficulty;
+                const matchSearch = !search || q.title.toLowerCase().includes(search) || q.content.toLowerCase().includes(search);
+                return matchDomain && matchDifficulty && matchSearch;
+            });
+
+            renderQuestions(filtered);
+        }
+
+        // Modal Logic
+        function openModal() {
+            document.getElementById('question-form').reset();
+            document.getElementById('q-id').value = '';
+            document.getElementById('modal-title').textContent = 'Add New Question';
+            document.getElementById('test-cases-container').innerHTML = '';
+            document.getElementById('q-starter').value = '';
+            toggleTypeFields();
+            document.getElementById('question-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('question-modal').style.display = 'none';
+        }
+
+        function toggleTypeFields() {
+            const type = document.getElementById('q-type').value;
+            document.getElementById('mcq-fields').style.display = type === 'Coding' ? 'none' : 'block';
+            document.getElementById('coding-fields').style.display = type === 'Coding' ? 'block' : 'none';
+        }
+
+        function addTestCaseRow(input = '', output = '') {
+            const container = document.getElementById('test-cases-container');
+            const row = document.createElement('div');
+            row.style = "display: flex; gap: 0.5rem; align-items: center;";
+            row.innerHTML = `
+                <input type="text" class="form-control tc-input" placeholder="Input" value="${input}" style="flex:1">
+                <input type="text" class="form-control tc-output" placeholder="Expected Output" value="${output}" style="flex:1">
+                <button type="button" onclick="this.parentElement.remove()" style="color:var(--danger); background:none; border:none; font-size:1.2rem; cursor:pointer">&times;</button>
+            `;
+            container.appendChild(row);
+        }
+
+        function safeParse(val, fallback) {
+            if (!val) return fallback;
+            if (typeof val !== 'string') return val;
+            try { return JSON.parse(val); }
+            catch (e) { return fallback; }
+        }
+
+        function openEditModal(id) {
+            console.log('Opening Edit Modal for ID:', id);
+            // Handle both 'id' and potential 'Id' from database
+            const q = allQuestions.find(it => (it.id == id || it.Id == id));
+            
+            if (!q) {
+                console.error('Question not found in local array for ID:', id);
+                utils.showToast('Error: Question data not found', 'error');
+                return;
+            }
+            
+            console.log('Found question:', q.title);
+            
+            try {
+                const qId = q.id || q.Id;
+                document.getElementById('q-id').value = qId;
+                document.getElementById('modal-title').textContent = 'Edit Question';
+                document.getElementById('q-type').value = q.type;
+                document.getElementById('q-title').value = q.title;
+                document.getElementById('q-content').value = q.content;
+                document.getElementById('q-domain').value = q.domain;
+                document.getElementById('q-difficulty').value = q.difficulty;
+                document.getElementById('q-marks').value = q.marks;
+
+                if (q.type === 'Coding') {
+                    const tcContainer = document.getElementById('test-cases-container');
+                    tcContainer.innerHTML = '';
+                    const testCases = safeParse(q.test_cases, []);
+                    if (Array.isArray(testCases)) {
+                        testCases.forEach(tc => addTestCaseRow(tc.input, tc.output));
+                    }
+                    const starter = q.starter_code;
+                    document.getElementById('q-starter').value = typeof starter === 'string' ? starter : JSON.stringify(starter, null, 2);
+                } else {
+                    const options = safeParse(q.options, {});
+                    document.getElementById('opt-a').value = options.A || '';
+                    document.getElementById('opt-b').value = options.B || '';
+                    document.getElementById('opt-c').value = options.C || '';
+                    document.getElementById('opt-d').value = options.D || '';
+                    document.getElementById('q-correct').value = q.correct_answer || 'A';
+                }
+
+                toggleTypeFields();
+                document.getElementById('question-modal').style.display = 'flex';
+            } catch (err) {
+                console.error('Error in openEditModal:', err);
+                utils.showToast('Error opening edit modal', 'error');
+            }
+        }
+
+        document.getElementById('question-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('q-id').value;
+            const type = document.getElementById('q-type').value;
+
+            const payload = {
+                type,
+                title: document.getElementById('q-title').value,
+                content: document.getElementById('q-content').value,
+                domain: document.getElementById('q-domain').value,
+                difficulty: document.getElementById('q-difficulty').value,
+                marks: parseInt(document.getElementById('q-marks').value),
+            };
+
+            if (type === 'Coding') {
+                const tcInputs = document.querySelectorAll('.tc-input');
+                const tcOutputs = document.querySelectorAll('.tc-output');
+                const testCases = [];
+                tcInputs.forEach((inp, i) => {
+                    if (inp.value || tcOutputs[i].value) {
+                        testCases.push({ input: inp.value, output: tcOutputs[i].value });
+                    }
+                });
+                payload.test_cases = testCases;
+                payload.starter_code = document.getElementById('q-starter').value;
+                payload.options = {};
+                payload.correct_answer = '';
+            } else {
+                payload.options = {
+                    A: document.getElementById('opt-a').value,
+                    B: document.getElementById('opt-b').value,
+                    C: document.getElementById('opt-c').value,
+                    D: document.getElementById('opt-d').value,
+                };
+                payload.correct_answer = document.getElementById('q-correct').value;
+                payload.test_cases = [];
+                payload.starter_code = '';
+            }
+
+            try {
+                const url = id ? `/api/admin/questions/${id}` : '/api/admin/questions';
+                const method = id ? 'PUT' : 'POST';
+                
+                await utils.api(url, {
+                    method,
+                    body: JSON.stringify(payload)
+                });
+
+                utils.showToast(id ? 'Question updated' : 'Question added', 'success');
+                document.getElementById('question-modal').style.display = 'none';
+                loadQuestions();
+            } catch (err) {}
+        });
+
+        async function deleteQuestion(id) {
+            if (!confirm('Are you sure you want to delete this question?')) return;
+            try {
+                await utils.api(`/api/admin/questions/${id}`, { method: 'DELETE' });
+                utils.showToast('Question deleted', 'success');
+                loadQuestions();
+            } catch (err) {}
+        }
+
+        loadQuestions();
+    </script>
+</body>
+</html>

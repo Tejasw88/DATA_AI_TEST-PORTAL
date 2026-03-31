@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Submitted | DATA.AI Assessment Platform</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .page-container { max-width: 600px; margin: 10rem auto; text-align: center; padding: 0 1.5rem; }
+        .success-icon { font-size: 5rem; color: var(--success); margin-bottom: 2rem; }
+    </style>
+</head>
+<body class="flex-center min-h-screen">
+
+    <div class="page-container">
+        <div class="card glass" style="padding: 4rem;">
+            <div class="success-icon">✓</div>
+            <h1 style="margin-bottom: 1rem;">Exam Submitted Successfully</h1>
+            <p style="color: var(--text-muted); margin-bottom: 3rem;">Your assessment has been recorded. Results will be released by the administrator shortly. You can now close this window or logout.</p>
+            
+            <button class="btn btn-outline" style="width: 100%;" onclick="utils.auth.logout()">
+                Logout & Exit
+            </button>
+        </div>
+        
+        <p style="margin-top: 2rem; color: var(--text-muted); font-size: 0.875rem;">
+            Questions? Contact <a href="mailto:club@data.ai">club@data.ai</a>
+        </p>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script>
+        // Ensure user is marked as submitted
+        utils.auth.checkCandidate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Login | DATA.AI Assessment Platform</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+            margin-top: -50px;
+        }
+        .logo-area {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -1px;
+        }
+        .login-card {
+            padding: 2.5rem;
+        }
+        .waiting-screen {
+            display: none;
+            text-align: center;
+        }
+        .pulse {
+            width: 80px;
+            height: 80px;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .pulse::after {
+            content: '';
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse-ring 1.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.7); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="flex-center min-h-screen">
+
+    <div class="login-container">
+        <div class="logo-area">
+            <div class="logo-text">DATA.AI</div>
+            <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.5rem;">DEngineer Club Online Assessment</p>
+        </div>
+
+        <!-- Login Form State -->
+        <div id="login-state" class="card login-card glass">
+            <h2 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Candidate Login</h2>
+            <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 2rem;">Please enter your specific exam credentials.</p>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">USERNAME</label>
+                    <input type="text" id="username" class="form-control" placeholder="e.g. tejasw_2026" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">PASSWORD</label>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                    Sign In to Exam
+                </button>
+            </form>
+
+            <div style="margin-top: 1.5rem; text-align: center; font-size: 0.875rem;">
+                <a href="#">Forgot your credentials? Contact Admin.</a>
+            </div>
+        </div>
+
+        <!-- Waiting for Session State -->
+        <div id="waiting-state" class="card login-card waiting-screen glass">
+            <div class="pulse"></div>
+            <h2 style="margin-bottom: 1rem;">Session Not Started</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Your exam session has not been activated by the administrator yet. Status: <strong>Pending Activation</strong></p>
+            <button class="btn btn-outline" style="width: 100%;" onclick="window.location.reload()">
+                Check Again
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await utils.api('/api/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.success) {
+                    utils.auth.setUser(response.user);
+                    
+                    // Check if exam is assigned/active
+                    if (response.user.sessionId) {
+                        window.location.href = '/briefing.html';
+                    } else {
+                        document.getElementById('login-state').style.display = 'none';
+                        document.getElementById('waiting-state').style.display = 'block';
+                    }
+                }
+            } catch (err) {
+                // Toast already shown by utils.api
+            }
+        });
+
+        // If already logged in, redirect
+        const user = utils.auth.getUser();
+        if (user) {
+            if (user.role === 'admin') window.location.href = '/admin/dashboard.html';
+            else if (user.sessionId) window.location.href = '/briefing.html';
+        }
+    </script>
+</body>
+</html>

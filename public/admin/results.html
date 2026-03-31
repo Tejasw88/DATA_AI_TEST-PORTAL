@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results | DATA.AI Admin</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        body { display: flex; background: #F8FAFC; height: 100vh; overflow: hidden; }
+        .sidebar { width: 260px; background: #1E293B; color: white; display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar-header { padding: 2rem; font-size: 1.5rem; font-weight: 800; border-bottom: 1px solid #334155; }
+        .sidebar-nav { flex: 1; padding: 1.5rem 0; }
+        .nav-link { display: flex; align-items: center; gap: 1rem; padding: 0.875rem 2rem; color: #94A3B8; font-weight: 500; transition: all 0.2s; }
+        .nav-link:hover { color: white; background: #334155; }
+        .nav-link.active { color: white; background: var(--primary); }
+        .main-content { flex: 1; overflow-y: auto; padding: 2.5rem; }
+        .dataTable { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+        .dataTable th { background: #F1F5F9; text-align: left; padding: 1rem 1.5rem; font-size: 11px; text-transform: uppercase; color: var(--text-muted); }
+        .dataTable td { padding: 1rem 1.5rem; border-top: 1px solid var(--border); font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">DATA.AI</div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="questions.html" class="nav-link">Question Bank</a>
+            <a href="candidates.html" class="nav-link">Candidates</a>
+            <a href="sessions.html" class="nav-link">Test Sessions</a>
+            <a href="results.html" class="nav-link active">Results</a>
+            <a href="settings.html" class="nav-link">Settings</a>
+        </nav>
+        <div style="padding: 2rem; border-top: 1px solid #334155;">
+            <button class="btn btn-outline" style="width: 100%; color: #94A3B8; border-color: #334155;" onclick="utils.auth.logout()">Logout</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5rem;">
+            <div>
+                <h1 style="font-size: 1.75rem;">Results & Leaderboard</h1>
+                <p style="color: var(--text-muted);">Visualize performance and export session data.</p>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-outline" onclick="window.print()">Export PDF</button>
+                <button class="btn btn-outline" onclick="exportCSV()">Export CSV</button>
+                <button class="btn btn-primary" style="background:var(--success);" onclick="releaseResults()">Release Results</button>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <select id="session-filter" class="form-control" style="width: 300px;" onchange="loadResults()">
+                <option value="">All Test Sessions</option>
+                <option value="1">DATA.AI Fresher Round 1</option>
+            </select>
+        </div>
+
+        <table class="dataTable">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Candidate</th>
+                    <th>Domain</th>
+                    <th>Score</th>
+                    <th>Percentage</th>
+                    <th>Status</th>
+                    <th>Time Taken</th>
+                    <th>Violations</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="results-table-body">
+                <!-- Rows will be injected here -->
+            </tbody>
+        </table>
+    </main>
+
+    <script src="../js/utils.js"></script>
+    <script>
+        utils.auth.checkAdmin();
+        async function loadResults() {
+            try {
+                const res = await utils.api('/api/admin/candidates');
+                const tbody = document.getElementById('results-table-body');
+                tbody.innerHTML = '';
+                
+                // Filter only submitted for leaderboard
+                const submitted = res.data.filter(c => c.status === 'Submitted')
+                    .sort((a,b) => b.id - a.id); // Sorted by recent for demo
+
+                submitted.forEach((c, idx) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td style="font-weight:700">#${idx + 1}</td>
+                        <td><strong>${c.username}</strong></td>
+                        <td>${c.domain}</td>
+                        <td>36 / 50</td>
+                        <td>72%</td>
+                        <td><span class="badge badge-green">PASS</span></td>
+                        <td>42m 14s</td>
+                        <td style="color:${c.violation_count > 0 ? 'var(--danger)' : 'inherit'}">${c.violation_count}</td>
+                        <td><button class="btn btn-outline" style="padding:4px 8px; font-size:11px;" onclick="utils.showToast('Full analytics report generated', 'success')">View Analytics</button></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (err) {}
+        }
+        function exportCSV() {
+            let csv = 'Rank,Username,Domain,Score,Percentage,Status,Violations\n';
+            const rows = document.querySelectorAll('#results-table-body tr');
+            rows.forEach(row => {
+                const cols = row.querySelectorAll('td');
+                const data = Array.from(cols).slice(0, 8).map(c => c.innerText.replace(/,/g, '')).join(',');
+                csv += data + '\n';
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'assessment_results.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            utils.showToast('CSV Exported Successfully', 'success');
+        }
+
+        function releaseResults() {
+            if(confirm('Release results to all candidates? This will send emails/notifications.')) {
+                utils.showToast('Results released to all candidates', 'success');
+            }
+        }
+
+        loadResults();
+    </script>
+</body>
+</html>

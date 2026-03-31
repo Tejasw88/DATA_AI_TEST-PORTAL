@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | DATA.AI Assessment Platform</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        .login-container { width: 100%; max-width: 440px; }
+        .logo-area { text-align: center; margin-bottom: 2rem; }
+        .logo-text { font-size: 2rem; font-weight: 800; color: var(--primary); }
+    </style>
+</head>
+<body class="flex-center min-h-screen" style="background:#0F172A;">
+
+    <div class="login-container">
+        <div class="logo-area">
+            <div class="logo-text" style="color:white;">DATA.AI ADMIN</div>
+            <p style="color: #94A3B8; font-size: 0.875rem; margin-top: 0.5rem;">Secure Club Administrator Login</p>
+        </div>
+
+        <div class="card login-card" style="padding: 2.5rem; background: #1E293B; border: 1px solid #334155;">
+            <h2 style="margin-bottom: 0.5rem; color: white;">Administrator Login</h2>
+            <p style="color: #94A3B8; font-size: 0.875rem; margin-bottom: 2rem;">Authorized access only.</p>
+            
+            <form id="admin-login-form">
+                <div class="form-group">
+                    <label for="username" style="color:#94A3B8;">ADMIN USERNAME</label>
+                    <input type="text" id="username" class="form-control" style="background:#0F172A; border-color:#334155; color:white;" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" style="color:#94A3B8;">PASSWORD</label>
+                    <input type="password" id="password" class="form-control" style="background:#0F172A; border-color:#334155; color:white;" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                    Sign In to Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/utils.js"></script>
+    <script>
+        document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await utils.api('/api/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.success && response.user.role === 'admin') {
+                    utils.auth.setUser(response.user);
+                    window.location.href = '/admin/dashboard.html';
+                } else {
+                    utils.showToast('Invalid admin credentials', 'error');
+                }
+            } catch (err) {
+                // Handled
+            }
+        });
+
+        // If already logged in as admin, redirect
+        const user = utils.auth.getUser();
+        if (user && user.role === 'admin') window.location.href = '/admin/dashboard.html';
+    </script>
+</body>
+</html>

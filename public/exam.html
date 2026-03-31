@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Interface | DATA.AI Assessment Platform</title>
+    <link rel="stylesheet" href="css/main.css">
+    <!-- Monaco Editor Loader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+    <style>
+        body { background-color: #F1F5F9; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        
+        .top-bar { height: 70px; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; flex-shrink: 0; }
+        
+        .timer-badge { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; color: var(--text-main); }
+        .timer-warning { color: var(--danger); animation: blink 1s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .main-container { display: flex; flex: 1; overflow: hidden; }
+        
+        .left-panel { width: 320px; background: white; border-right: 1px solid var(--border); padding: 1.5rem; overflow-y: auto; flex-shrink: 0; }
+        .center-panel { flex: 1; padding: 2rem; overflow-y: auto; position: relative; }
+
+        .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 1rem; }
+        .nav-item { width: 100%; aspect-ratio: 1; border: 1px solid var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 600; cursor: pointer; background: #F8FAFC; transition: all 0.2s; }
+        .nav-item:hover { border-color: var(--primary); }
+        .nav-item.active { border: 2px solid var(--primary); font-weight: 800; transform: scale(1.05); }
+        .nav-item.answered { background: var(--success); color: white; border-color: var(--success); }
+        .nav-item.flagged { background: var(--warning); color: white; border-color: var(--warning); }
+        .nav-item.current { background: #E2E8F0; }
+
+        .question-card { max-width: 900px; margin: 0 auto; min-height: 500px; padding: 2.5rem; }
+        
+        /* Coding View Styles */
+        .coding-container { display: flex; flex-direction: column; gap: 1.5rem; height: 100%; }
+        .editor-wrapper { border: 1.5px solid var(--border); border-radius: 8px; overflow: hidden; height: 400px; background: #1e1e1e; }
+        .terminal { background: #0F172A; color: #10B981; font-family: 'JetBrains Mono', monospace; padding: 1.25rem; border-radius: 8px; font-size: 0.875rem; min-height: 120px; max-height: 200px; overflow-y: auto; margin-top: 1rem; border: 1px solid #334155; }
+
+        /* Security Modal */
+        #violation-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        #violation-content { width: 100%; max-width: 500px; background: white; padding: 3rem; border-radius: 20px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+
+        .badge-type { margin-bottom: 0.5rem; display: inline-block; }
+    </style>
+</head>
+<body oncontextmenu="return false;" onselectstart="return false">
+
+    <!-- Top Bar -->
+    <header class="top-bar">
+        <div class="user-info">
+            <h3 id="display-name">Loading...</h3>
+            <span id="display-domain" class="badge badge-blue">Frontend - Easy</span>
+        </div>
+        
+        <div class="timer-area flex-center" style="gap: 1rem;">
+            <div id="exam-timer" class="timer-badge">00:00:00</div>
+        </div>
+
+        <div class="actions" style="gap: 1rem; display: flex;">
+            <button id="flag-btn" class="btn btn-outline" style="color: var(--warning); border-color: var(--warning);">
+                🚩 Flag for Review
+            </button>
+            <button id="submit-exam-btn" class="btn btn-primary" style="background: var(--danger);">
+                Submit Exam
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Exam Container -->
+    <main class="main-container">
+        <!-- Left Sidebar Navigator -->
+        <aside class="left-panel">
+            <h4 style="margin-bottom: 0.5rem;">Question Navigator</h4>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.5rem;">Click numbers to navigate between questions.</p>
+            
+            <div id="question-navigator" class="nav-grid"></div>
+
+            <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+                <h4 style="margin-bottom: 1rem;">Legend</h4>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;"><div style="width: 12px; height: 12px; background: var(--success); border-radius: 2px;"></div> Answered</div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;"><div style="width: 12px; height: 12px; background: var(--warning); border-radius: 2px;"></div> Flagged</div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;"><div style="width: 12px; height: 12px; background: #F8FAFC; border: 1px solid var(--border); border-radius: 2px;"></div> Not Visited</div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;"><div style="width: 2px; height: 12px; background: var(--primary); border: 2px solid var(--primary); border-radius: 2px;"></div> Active</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Dynamic Content Area -->
+        <section class="center-panel">
+            <div id="question-content" class="card question-card glass">
+                <!-- Question content will be injected here -->
+                <div class="flex-center" style="height: 100%;">
+                    <p>Fetching your assessment questions...</p>
+                </div>
+            </div>
+
+            <div class="flex-center" style="margin-top: 2rem; gap: 1rem;">
+                <button id="prev-btn" class="btn btn-outline" style="padding: 1rem 2rem;">&larr; Previous</button>
+                <button id="next-btn" class="btn btn-primary" style="padding: 1rem 3rem;">Next Question &rarr;</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Violation/Security Modal -->
+    <div id="violation-modal">
+        <div id="violation-content">
+            <h1 style="color: var(--danger); font-size: 3rem; margin-bottom: 1rem;">⚠️</h1>
+            <h2 id="violation-title">Security Violation Detected</h2>
+            <p id="violation-msg" style="margin: 1.5rem 0; color: var(--text-muted);">Tab switching or exiting fullscreen is prohibited. This incident has been logged.</p>
+            <div id="countdown-circle" style="font-size: 2rem; font-weight: 800; color: var(--danger); margin-bottom: 2rem;">10s</div>
+            <button id="return-btn" class="btn btn-primary" style="width: 100%; display: none;">Return to Exam</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script>
+        // Security logic, navigation, and API integration will follow.
+        // For the sake of this file, I'll put the core UI logic here.
+        
+        let examData = null;
+        let currentIndex = 0;
+        let answers = {};
+        let flaggedQuestions = {};
+        let timerInterval = null;
+        let editor = null;
+        let violationCount = 0;
+
+        // AUTH CHECK
+        utils.auth.checkCandidate();
+        const user = utils.auth.getUser();
+
+        // 1. INITIALIZE EXAM
+        async function initExam() {
+            try {
+                const data = await utils.api('/api/exam/start');
+                examData = data;
+                
+                document.getElementById('display-name').textContent = data.candidate.fullName;
+                document.getElementById('display-domain').textContent = `${data.candidate.domain} - ${data.candidate.difficulty}`;
+                
+                startTimer(data.duration_minutes * 60);
+                renderNavigator();
+                renderQuestion(0);
+                
+                setupSecurity();
+            } catch (err) {
+                // Handled
+            }
+        }
+
+        // 2. NAVIGATOR RENDER
+        function renderNavigator() {
+            const nav = document.getElementById('question-navigator');
+            nav.innerHTML = '';
+            examData.questions.forEach((q, idx) => {
+                const item = document.createElement('div');
+                const isFlagged = flaggedQuestions[q.id];
+                const isAnswered = !!answers[q.id];
+                
+                item.className = `nav-item ${idx === currentIndex ? 'active' : ''} ${isAnswered ? 'answered' : ''} ${isFlagged ? 'flagged' : ''}`;
+                item.textContent = idx + 1;
+                item.onclick = () => renderQuestion(idx);
+                nav.appendChild(item);
+            });
+        }
+
+        // 3. RENDER QUESTION
+        function renderQuestion(index) {
+            currentIndex = index;
+            const q = examData.questions[index];
+            const content = document.getElementById('question-content');
+            
+            // Highlight active in nav
+            renderNavigator();
+
+            // Update Navigation Buttons state
+            document.getElementById('prev-btn').disabled = (index === 0);
+            document.getElementById('prev-btn').style.opacity = (index === 0) ? '0.5' : '1';
+            document.getElementById('next-btn').disabled = (index === examData.questions.length - 1);
+            document.getElementById('next-btn').style.opacity = (index === examData.questions.length - 1) ? '0.5' : '1';
+
+            // Update Flag Button Text
+            const flagBtn = document.getElementById('flag-btn');
+            if (flaggedQuestions[q.id]) {
+                flagBtn.innerHTML = '🚩 Reflag / Unflag';
+                flagBtn.classList.add('active');
+            } else {
+                flagBtn.innerHTML = '🏁 Flag for Review';
+                flagBtn.classList.remove('active');
+            }
+
+            let qHtml = `
+                <div class="badge badge-blue badge-type">${q.type} | Points: ${q.marks}</div>
+                <h2 style="margin-bottom: 1.5rem;">${q.title}</h2>
+                <div style="margin-bottom: 2rem; white-space: pre-wrap;">${q.content}</div>
+            `;
+
+            if (q.type === 'MCQ' || q.type === 'Aptitude') {
+                const options = JSON.parse(q.options || '{}');
+                qHtml += `<div class="options-container" style="display: flex; flex-direction: column; gap: 1rem;">`;
+                ['A', 'B', 'C', 'D'].forEach(optKey => {
+                    const optionVal = options[optKey];
+                    if (optionVal) {
+                        qHtml += `
+                            <label class="card" style="cursor: pointer; display: flex; align-items: center; gap: 1rem; padding: 1rem; background: ${answers[q.id] === optionVal ? '#EFF6FF' : 'white'}; border-color: ${answers[q.id] === optionVal ? 'var(--primary)' : 'var(--border)'}">
+                                <input type="radio" name="q_${q.id}" value="${optKey}" ${answers[q.id] === optKey ? 'checked' : ''} onclick="saveAnswer('${q.id}', '${optKey}')">
+                                <span>${optionVal}</span>
+                            </label>
+                        `;
+                    }
+                });
+                qHtml += `</div>`;
+            } else if (q.type === 'Coding') {
+                qHtml += `
+                    <div class="coding-container">
+                        <div class="editor-wrapper" id="monaco-editor"></div>
+                        <div class="flex-center" style="justify-content: flex-start; gap: 1rem;">
+                            <select id="lang-selector" class="form-control" style="width: auto;">
+                                <option value="javascript">JavaScript</option>
+                                <option value="python">Python</option>
+                                <option value="java">Java</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="runCode()">Run & Test Code</button>
+                            <button class="btn btn-outline" onclick="resetCode()">Reset Starter</button>
+                        </div>
+                        <div id="terminal" class="terminal">Terminal Output:<br>> Ready...</div>
+                    </div>
+                `;
+            }
+
+            content.innerHTML = qHtml;
+
+            if (q.type === 'Coding') {
+                initMonaco(q);
+            }
+        }
+
+        // 4. EDITOR LOGIC
+        function initMonaco(q) {
+            require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
+            require(['vs/editor/editor.main'], function () {
+                const starterCodeMap = JSON.parse(q.starter_code || '{}');
+                const lang = document.getElementById('lang-selector').value;
+
+                if (editor) editor.dispose();
+
+                editor = monaco.editor.create(document.getElementById('monaco-editor'), {
+                    value: answers[q.id] || starterCodeMap[lang] || "// write your code",
+                    language: lang,
+                    theme: 'vs-dark',
+                    automaticLayout: true,
+                    fontSize: 14,
+                    minimap: { enabled: false }
+                });
+
+                editor.onDidChangeModelContent(() => {
+                    saveAnswer(q.id, editor.getValue());
+                });
+            });
+        }
+
+        // 5. RUN CODE
+        async function runCode() {
+            const terminal = document.getElementById('terminal');
+            terminal.innerHTML = "Terminal Output:<br>> Running code via Piston API...";
+            
+            const q = examData.questions[currentIndex];
+            const lang = document.getElementById('lang-selector').value;
+            const code = editor.getValue();
+
+            try {
+                const res = await utils.api('/api/exam/execute', {
+                    method: 'POST',
+                    body: JSON.stringify({ language: lang, code, question_id: q.id })
+                });
+
+                terminal.innerHTML = `Terminal Output:<br>> Output:<br>${res.output || 'No output'}<br>> STATUS: ${res.passed ? '<span style="color: #10B981">PASSED</span>' : '<span style="color: var(--danger)">FAILED</span>'}`;
+            } catch (err) {
+                terminal.innerHTML = `Terminal Output:<br>> <span style="color: var(--danger)">Error connecting to execution engine.</span>`;
+            }
+        }
+
+        function saveAnswer(qId, val) {
+            answers[qId] = val;
+            utils.api('/api/exam/answer', {
+                method: 'POST',
+                body: JSON.stringify({ question_id: qId, answer_text: val })
+            });
+            renderNavigator();
+        }
+
+        function startTimer(seconds) {
+            const display = document.getElementById('exam-timer');
+            timerInterval = setInterval(() => {
+                const h = Math.floor(seconds / 3600);
+                const m = Math.floor((seconds % 3600) / 60);
+                const s = seconds % 60;
+                display.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                
+                if (seconds < 300) display.classList.add('timer-warning');
+                if (seconds <= 0) {
+                    clearInterval(timerInterval);
+                    submitExam(true);
+                }
+                seconds--;
+            }, 1000);
+        }
+
+        // 6. SECURITY ENGINE
+        function setupSecurity() {
+            // Block Context Menu & Selection (already done in body attributes)
+            
+            // Block Keys
+            window.addEventListener('keydown', (e) => {
+                const blocked = [
+                    'F12', 'F5', 'F11', 'u', 'r', 's', 'i', 'p', 'a', 'c', 'v'
+                ];
+                if (blocked.includes(e.key.toLowerCase()) && (e.ctrlKey || e.metaKey)) {
+                    e.preventDefault();
+                    console.log(`Blocked: ${e.key}`);
+                }
+                
+                // Secret Exit: Ctrl + Shift + Alt + Q
+                if (e.ctrlKey && e.shiftKey && e.altKey && e.key === 'Q') {
+                    if (confirm('Admin Exit: Are you sure you want to exit and submit?')) {
+                        submitExam();
+                    }
+                }
+            });
+
+            // Detect Blur (Tab switch / App switch)
+            window.addEventListener('blur', () => {
+                logViolation('Tab switch / Window Blur');
+            });
+
+            // Detect Fullscreen Exit
+            document.addEventListener('fullscreenchange', () => {
+                if (!document.fullscreenElement) {
+                    handleFullscreenExit();
+                }
+            });
+        }
+
+        function handleFullscreenExit() {
+            const modal = document.getElementById('violation-modal');
+            const countdown = document.getElementById('countdown-circle');
+            const returnBtn = document.getElementById('return-btn');
+            
+            violationCount++;
+            logViolation('Fullscreen Exit');
+
+            if (violationCount >= 2) {
+                alert('CRITICAL SECURITY BREACH: System auto-submitting.');
+                submitExam();
+                return;
+            }
+
+            modal.style.display = 'flex';
+            let timeLeft = 10;
+            const intv = setInterval(() => {
+                countdown.textContent = `${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(intv);
+                    returnBtn.style.display = 'block';
+                    countdown.style.display = 'none';
+                }
+                timeLeft--;
+            }, 1000);
+
+            returnBtn.onclick = () => {
+                document.documentElement.requestFullscreen().then(() => {
+                    modal.style.display = 'none';
+                    returnBtn.style.display = 'none';
+                    countdown.style.display = 'block';
+                    countdown.textContent = '10s';
+                });
+            };
+        }
+
+        async function logViolation(type) {
+            console.warn(`SECURITY VIOLATION: ${type}`);
+            utils.api('/api/exam/log-event', {
+                method: 'POST',
+                body: JSON.stringify({ event_type: type })
+            });
+        }
+
+        async function submitExam(isAuto = false) {
+            if (!isAuto && !confirm('Are you sure you want to submit your assessment? This action cannot be undone.')) return;
+            
+            try {
+                await utils.api('/api/exam/submit', { method: 'POST' });
+                window.location.href = '/submitted.html';
+            } catch (err) {
+                alert('Submission failed. Contact proctor.');
+            }
+        }
+
+        function toggleFlag() {
+            if (!examData) return;
+            const q = examData.questions[currentIndex];
+            flaggedQuestions[q.id] = !flaggedQuestions[q.id];
+            renderNavigator();
+            renderQuestion(currentIndex);
+        }
+
+        document.getElementById('next-btn').onclick = () => { if (currentIndex < examData.questions.length - 1) renderQuestion(currentIndex + 1); };
+        document.getElementById('prev-btn').onclick = () => { if (currentIndex > 0) renderQuestion(currentIndex - 1); };
+        document.getElementById('submit-exam-btn').onclick = () => submitExam();
+        document.getElementById('flag-btn').onclick = () => toggleFlag();
+
+        initExam();
+    </script>
+</body>
+</html>
